@@ -17,10 +17,6 @@ export async function sendVerificationEmail({
   verificationUrl,
   userName,
 }: SendVerificationEmailParams): Promise<void> {
-  console.log('[Email] Sending verification email to:', to);
-  console.log('[Email] Verification URL:', verificationUrl);
-  console.log('[Email] RESEND_API_KEY set:', !!process.env.RESEND_API_KEY);
-
   const html = await render(VerificationEmail({ verificationUrl, userName }));
 
   const { error } = await resend.emails.send({
