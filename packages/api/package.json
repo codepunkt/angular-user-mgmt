@@ -1,0 +1,11 @@
+{
+  "name": "@angular-user-mgmt/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'API dev server not configured yet'",
+    "test": "echo 'API tests not configured yet'",
+    "typecheck": "echo 'API typecheck not configured yet'"
+  }
+}

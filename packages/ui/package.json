@@ -1,0 +1,11 @@
+{
+  "name": "@angular-user-mgmt/ui",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'UI dev server not configured yet'",
+    "test": "echo 'UI tests not configured yet'",
+    "typecheck": "echo 'UI typecheck not configured yet'"
+  }
+}
