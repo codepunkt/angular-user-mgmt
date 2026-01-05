@@ -1,7 +1,5 @@
-import { Component, inject, type OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { AuthActions } from './store/auth/auth.actions';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +7,4 @@ import { AuthActions } from './store/auth/auth.actions';
   imports: [RouterOutlet],
   template: `<router-outlet />`,
 })
-export class AppComponent implements OnInit {
-  private store = inject(Store);
-
-  ngOnInit(): void {
-    this.store.dispatch(AuthActions.checkSession());
-  }
-}
+export class AppComponent {}
