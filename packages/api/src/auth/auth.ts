@@ -2,6 +2,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import pg from 'pg';
+import { sendVerificationEmail } from '../email/email.service.js';
 import { PrismaClient } from '../generated/prisma/index.js';
 
 const pool = new pg.Pool({
@@ -25,6 +26,16 @@ export const auth = betterAuth({
     requireEmailVerification: true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      sendVerificationEmail({
+        to: user.email,
+        verificationUrl: url,
+        userName: user.name,
+      });
+    },
   },
   user: {
     additionalFields: {
