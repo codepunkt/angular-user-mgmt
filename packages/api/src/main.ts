@@ -8,6 +8,12 @@ async function bootstrap() {
     bodyParser: false,
   });
 
+  // Enable CORS for the frontend
+  app.enableCors({
+    origin: process.env.APP_BASE_URL || 'http://localhost:4200',
+    credentials: true,
+  });
+
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
