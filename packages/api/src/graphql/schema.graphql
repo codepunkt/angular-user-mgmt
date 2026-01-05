@@ -25,4 +25,14 @@ type Query {
   users(offset: Int!, limit: Int!): UsersConnection!
 }
 
+input UpdateUserInput {
+  name: String
+  preferredName: String
+  role: Role
+}
+
+type Mutation {
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+}
+
 scalar DateTime

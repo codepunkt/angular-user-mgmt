@@ -52,9 +52,7 @@ export class UsersEffects {
       ofType(UsersActions.updateUser),
       exhaustMap(({ payload }) =>
         this.usersService.updateUser(payload).pipe(
-          map(({ user, emailChanged }) =>
-            UsersActions.updateUserSuccess({ user, emailChanged }),
-          ),
+          map(({ user }) => UsersActions.updateUserSuccess({ user })),
           catchError((error) =>
             of(
               UsersActions.updateUserFailure({
@@ -71,14 +69,11 @@ export class UsersEffects {
     () =>
       this.actions$.pipe(
         ofType(UsersActions.updateUserSuccess),
-        tap(({ emailChanged }) => {
-          const message = emailChanged
-            ? 'User updated. Verification email sent to new address.'
-            : 'User updated successfully.';
+        tap(() => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: message,
+            detail: 'User updated successfully.',
           });
         }),
       ),

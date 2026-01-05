@@ -13,9 +13,10 @@ interface UsersQueryResponse {
   };
 }
 
-interface UpdateUserResponse {
-  user: User;
-  emailChanged: boolean;
+interface UpdateUserMutationResponse {
+  data: {
+    updateUser: User;
+  };
 }
 
 @Injectable({ providedIn: 'root' })
@@ -60,13 +61,32 @@ export class UsersService {
       );
   }
 
-  updateUser(
-    payload: UpdateUserPayload,
-  ): Observable<{ user: User; emailChanged: boolean }> {
-    return this.http.patch<UpdateUserResponse>(
-      `/api/admin/users/${payload.id}`,
-      payload,
-      { withCredentials: true },
-    );
+  updateUser(payload: UpdateUserPayload): Observable<{ user: User }> {
+    const mutation = `
+      mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
+        updateUser(id: $id, input: $input) {
+          id
+          email
+          name
+          preferredName
+          role
+          emailVerified
+          createdAt
+        }
+      }
+    `;
+
+    const { id, ...input } = payload;
+
+    return this.http
+      .post<UpdateUserMutationResponse>(
+        '/graphql',
+        {
+          query: mutation,
+          variables: { id, input },
+        },
+        { withCredentials: true },
+      )
+      .pipe(map((response) => ({ user: response.data.updateUser })));
   }
 }

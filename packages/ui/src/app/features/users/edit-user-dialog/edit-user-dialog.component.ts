@@ -81,28 +81,6 @@ import {
         </div>
 
         <div class="field">
-          <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            pInputText
-            formControlName="email"
-            class="w-full"
-          />
-          @if (form.get('email')?.touched && form.get('email')?.errors?.['required']) {
-            <small class="p-error">Email is required</small>
-          }
-          @if (form.get('email')?.touched && form.get('email')?.errors?.['email']) {
-            <small class="p-error">Invalid email format</small>
-          }
-          @if (emailChanged) {
-            <small class="p-warn">
-              Changing email will trigger re-verification
-            </small>
-          }
-        </div>
-
-        <div class="field">
           <label for="role">Role</label>
           <p-dropdown
             id="role"
@@ -157,12 +135,6 @@ import {
         margin-top: 0.25rem;
         color: var(--red-500);
       }
-
-      .p-warn {
-        display: block;
-        margin-top: 0.25rem;
-        color: var(--yellow-600);
-      }
     `,
   ],
 })
@@ -179,7 +151,6 @@ export class EditUserDialogComponent implements OnChanges {
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
     preferredName: [''],
-    email: ['', [Validators.required, Validators.email]],
     role: ['USER' as UserRole],
   });
 
@@ -191,15 +162,6 @@ export class EditUserDialogComponent implements OnChanges {
   loading$ = this.store.select(selectUpdateLoading);
   error$ = this.store.select(selectUpdateError);
 
-  private originalEmail = '';
-
-  get emailChanged(): boolean {
-    return (
-      this.form.get('email')?.value !== this.originalEmail &&
-      this.form.get('email')?.dirty === true
-    );
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     // biome-ignore lint/complexity/useLiteralKeys: SimpleChanges requires bracket notation
     if (changes['visible']) {
@@ -207,11 +169,9 @@ export class EditUserDialogComponent implements OnChanges {
     }
     // biome-ignore lint/complexity/useLiteralKeys: SimpleChanges requires bracket notation
     if (changes['user'] && this.user) {
-      this.originalEmail = this.user.email;
       this.form.patchValue({
         name: this.user.name,
         preferredName: this.user.preferredName ?? '',
-        email: this.user.email,
         role: this.user.role,
       });
       this.form.markAsPristine();

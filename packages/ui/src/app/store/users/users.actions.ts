@@ -5,7 +5,6 @@ export interface UpdateUserPayload {
   id: string;
   name?: string;
   preferredName?: string | null;
-  email?: string;
   role?: UserRole;
 }
 
@@ -20,7 +19,7 @@ export const UsersActions = createActionGroup({
     'Clear Selected User': emptyProps(),
 
     'Update User': props<{ payload: UpdateUserPayload }>(),
-    'Update User Success': props<{ user: User; emailChanged: boolean }>(),
+    'Update User Success': props<{ user: User }>(),
     'Update User Failure': props<{ error: string }>(),
 
     'Clear Update Error': emptyProps(),
