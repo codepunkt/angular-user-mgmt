@@ -21,6 +21,22 @@ interface SignInResponse {
   };
 }
 
+interface SignUpResponse {
+  user: CurrentUser;
+  session: {
+    id: string;
+    userId: string;
+    expiresAt: string;
+  };
+}
+
+export interface SignUpPayload {
+  email: string;
+  password: string;
+  name: string;
+  preferredName?: string | null;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
@@ -50,5 +66,13 @@ export class AuthService {
       {},
       { withCredentials: true },
     );
+  }
+
+  signUp(payload: SignUpPayload): Observable<CurrentUser> {
+    return this.http
+      .post<SignUpResponse>(`${this.apiUrl}/sign-up/email`, payload, {
+        withCredentials: true,
+      })
+      .pipe(map((response) => response.user));
   }
 }

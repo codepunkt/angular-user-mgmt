@@ -8,7 +8,7 @@ interface UsersQueryResponse {
   data: {
     users: {
       items: User[];
-      totalCount: number;
+      total: number;
     };
   };
 }
@@ -38,7 +38,7 @@ export class UsersService {
             emailVerified
             createdAt
           }
-          totalCount
+          total
         }
       }
     `;
@@ -55,7 +55,7 @@ export class UsersService {
       .pipe(
         map((response) => ({
           users: response.data.users.items,
-          totalCount: response.data.users.totalCount,
+          totalCount: response.data.users.total,
         })),
       );
   }

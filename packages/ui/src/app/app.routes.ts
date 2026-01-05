@@ -10,6 +10,14 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
   {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/register/register.component').then(
+        (m) => m.RegisterComponent,
+      ),
+    canActivate: [guestGuard],
+  },
+  {
     path: 'users',
     loadComponent: () =>
       import('./features/users/users.component').then((m) => m.UsersComponent),

@@ -20,7 +20,7 @@ import {
 } from '../../store/auth/auth.selectors';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,12 +33,39 @@ import {
     MessageModule,
   ],
   template: `
-    <div class="login-container">
-      <p-card header="Sign In" class="login-card">
+    <div class="register-container">
+      <p-card header="Create Account" class="register-card">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           @if (error$ | async; as error) {
             <p-message severity="error" [text]="error" class="error-message" />
           }
+
+          <div class="field">
+            <label for="name">Name</label>
+            <input
+              id="name"
+              type="text"
+              pInputText
+              formControlName="name"
+              class="w-full"
+              autocomplete="name"
+            />
+            @if (form.get('name')?.touched && form.get('name')?.errors?.['required']) {
+              <small class="p-error">Name is required</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="preferredName">Preferred Name (optional)</label>
+            <input
+              id="preferredName"
+              type="text"
+              pInputText
+              formControlName="preferredName"
+              class="w-full"
+              autocomplete="nickname"
+            />
+          </div>
 
           <div class="field">
             <label for="email">Email</label>
@@ -63,28 +90,31 @@ import {
             <p-password
               id="password"
               formControlName="password"
-              [feedback]="false"
+              [feedback]="true"
               [toggleMask]="true"
               styleClass="w-full"
               inputStyleClass="w-full"
-              autocomplete="current-password"
+              autocomplete="new-password"
             />
             @if (form.get('password')?.touched && form.get('password')?.errors?.['required']) {
               <small class="p-error">Password is required</small>
+            }
+            @if (form.get('password')?.touched && form.get('password')?.errors?.['minlength']) {
+              <small class="p-error">Password must be at least 8 characters</small>
             }
           </div>
 
           <p-button
             type="submit"
-            label="Sign In"
+            label="Create Account"
             [loading]="(loading$ | async) ?? false"
             [disabled]="form.invalid || (loading$ | async)"
             styleClass="w-full"
           />
 
-          <div class="register-link">
-            Don't have an account?
-            <a routerLink="/register" class="link">Create one</a>
+          <div class="login-link">
+            Already have an account?
+            <a routerLink="/login" class="link">Sign in</a>
           </div>
         </form>
       </p-card>
@@ -92,7 +122,7 @@ import {
   `,
   styles: [
     `
-      .login-container {
+      .register-container {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -100,7 +130,7 @@ import {
         padding: 1rem;
       }
 
-      .login-card {
+      .register-card {
         width: 100%;
         max-width: 400px;
       }
@@ -129,7 +159,7 @@ import {
         margin-top: 0.25rem;
       }
 
-      .register-link {
+      .login-link {
         margin-top: 1.5rem;
         text-align: center;
         color: var(--text-color-secondary);
@@ -147,13 +177,15 @@ import {
     `,
   ],
 })
-export class LoginComponent {
+export class RegisterComponent {
   private store = inject(Store);
   private fb = inject(FormBuilder);
 
   form: FormGroup = this.fb.group({
+    name: ['', Validators.required],
+    preferredName: [''],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', Validators.required],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   loading$ = this.store.select(selectAuthLoading);
@@ -161,8 +193,15 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.form.valid) {
-      const { email, password } = this.form.value;
-      this.store.dispatch(AuthActions.login({ email, password }));
+      const { name, preferredName, email, password } = this.form.value;
+      this.store.dispatch(
+        AuthActions.register({
+          name,
+          email,
+          password,
+          preferredName: preferredName || null,
+        }),
+      );
     }
   }
 }

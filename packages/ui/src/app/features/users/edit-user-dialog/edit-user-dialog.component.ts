@@ -43,9 +43,10 @@ import {
   template: `
     <p-dialog
       header="Edit User"
-      [visible]="visible"
+      [(visible)]="dialogVisible"
       [modal]="true"
       [closable]="true"
+      [dismissableMask]="true"
       [style]="{ width: '450px' }"
       (onHide)="onClose()"
     >
@@ -170,6 +171,8 @@ export class EditUserDialogComponent implements OnChanges {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
+  dialogVisible = false;
+
   private store = inject(Store);
   private fb = inject(FormBuilder);
 
@@ -198,6 +201,10 @@ export class EditUserDialogComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // biome-ignore lint/complexity/useLiteralKeys: SimpleChanges requires bracket notation
+    if (changes['visible']) {
+      this.dialogVisible = this.visible;
+    }
     // biome-ignore lint/complexity/useLiteralKeys: SimpleChanges requires bracket notation
     if (changes['user'] && this.user) {
       this.originalEmail = this.user.email;
