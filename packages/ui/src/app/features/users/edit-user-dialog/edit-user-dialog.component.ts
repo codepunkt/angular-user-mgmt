@@ -17,9 +17,9 @@ import {
 import { Store } from '@ngrx/store';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 import type { User, UserRole } from '../../../core/models/user.model';
 import { UsersActions } from '../../../store/users/users.actions';
@@ -37,7 +37,7 @@ import {
     DialogModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
+    RadioButtonModule,
     MessageModule,
   ],
   template: `
@@ -81,15 +81,25 @@ import {
         </div>
 
         <div class="field">
-          <label for="role">Role</label>
-          <p-dropdown
-            id="role"
-            formControlName="role"
-            [options]="roleOptions"
-            optionLabel="label"
-            optionValue="value"
-            styleClass="w-full"
-          />
+          <label>Role</label>
+          <div class="role-options">
+            <div class="role-option">
+              <p-radioButton
+                inputId="role-user"
+                value="USER"
+                formControlName="role"
+              />
+              <label for="role-user">User</label>
+            </div>
+            <div class="role-option">
+              <p-radioButton
+                inputId="role-admin"
+                value="ADMIN"
+                formControlName="role"
+              />
+              <label for="role-admin">Admin</label>
+            </div>
+          </div>
         </div>
       </form>
 
@@ -135,6 +145,22 @@ import {
         margin-top: 0.25rem;
         color: var(--red-500);
       }
+
+      .role-options {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .role-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .role-option label {
+        margin-bottom: 0;
+        cursor: pointer;
+      }
     `,
   ],
 })
@@ -153,11 +179,6 @@ export class EditUserDialogComponent implements OnChanges {
     preferredName: [''],
     role: ['USER' as UserRole],
   });
-
-  roleOptions: { label: string; value: UserRole }[] = [
-    { label: 'User', value: 'USER' },
-    { label: 'Admin', value: 'ADMIN' },
-  ];
 
   loading$ = this.store.select(selectUpdateLoading);
   error$ = this.store.select(selectUpdateError);
