@@ -1,0 +1,28 @@
+enum Role {
+  ADMIN
+  USER
+}
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  preferredName: String
+  role: Role!
+  emailVerified: Boolean!
+  createdAt: DateTime!
+}
+
+type UsersConnection {
+  items: [User!]!
+  total: Int!
+  offset: Int!
+  limit: Int!
+  hasMore: Boolean!
+}
+
+type Query {
+  users(offset: Int!, limit: Int!): UsersConnection!
+}
+
+scalar DateTime
