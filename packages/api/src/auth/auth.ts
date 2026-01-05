@@ -24,11 +24,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    autoSignIn: false,
     minPasswordLength: 8,
     maxPasswordLength: 128,
   },
   emailVerification: {
     sendOnSignUp: true,
+    sendOnSignIn: true,
+    autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       sendVerificationEmail({
         to: user.email,

@@ -17,6 +17,7 @@ import { AuthActions } from '../../store/auth/auth.actions';
 import {
   selectAuthError,
   selectAuthLoading,
+  selectRegistrationPending,
 } from '../../store/auth/auth.selectors';
 
 @Component({
@@ -35,6 +36,14 @@ import {
   template: `
     <div class="register-container">
       <p-card header="Create Account" class="register-card">
+        @if (registrationPending$ | async) {
+          <div class="success-container">
+            <i class="pi pi-envelope success-icon"></i>
+            <h3>Check your email</h3>
+            <p>We've sent a verification link to your email address. Please click the link to verify your account.</p>
+            <a routerLink="/login" class="link">Back to Sign In</a>
+          </div>
+        } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           @if (error$ | async; as error) {
             <p-message severity="error" [text]="error" class="error-message" />
@@ -117,6 +126,7 @@ import {
             <a routerLink="/login" class="link">Sign in</a>
           </div>
         </form>
+        }
       </p-card>
     </div>
   `,
@@ -174,6 +184,27 @@ import {
       .link:hover {
         text-decoration: underline;
       }
+
+      .success-container {
+        text-align: center;
+        padding: 1rem 0;
+      }
+
+      .success-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .success-container h3 {
+        margin: 0 0 0.5rem 0;
+        color: var(--text-color);
+      }
+
+      .success-container p {
+        margin: 0 0 1.5rem 0;
+        color: var(--text-color-secondary);
+      }
     `,
   ],
 })
@@ -190,6 +221,7 @@ export class RegisterComponent {
 
   loading$ = this.store.select(selectAuthLoading);
   error$ = this.store.select(selectAuthError);
+  registrationPending$ = this.store.select(selectRegistrationPending);
 
   onSubmit(): void {
     if (this.form.valid) {

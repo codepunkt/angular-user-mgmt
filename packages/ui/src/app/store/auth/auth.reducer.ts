@@ -47,19 +47,26 @@ export const authReducer = createReducer(
     ...state,
     loading: true,
     error: null,
+    registrationPending: false,
   })),
 
-  on(AuthActions.registerSuccess, (state, { user }) => ({
+  on(AuthActions.registerSuccess, (state) => ({
     ...state,
-    user,
     loading: false,
     error: null,
+    registrationPending: true,
   })),
 
   on(AuthActions.registerFailure, (state, { error }) => ({
     ...state,
     loading: false,
     error,
+    registrationPending: false,
+  })),
+
+  on(AuthActions.clearRegistrationPending, (state) => ({
+    ...state,
+    registrationPending: false,
   })),
 
   on(AuthActions.logout, (state) => ({

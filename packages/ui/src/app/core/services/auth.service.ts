@@ -54,7 +54,7 @@ export class AuthService {
     return this.http
       .post<SignInResponse>(
         `${this.apiUrl}/sign-in/email`,
-        { email, password },
+        { email, password, callbackURL: window.location.origin },
         { withCredentials: true },
       )
       .pipe(map((response) => response.user));
@@ -70,9 +70,11 @@ export class AuthService {
 
   signUp(payload: SignUpPayload): Observable<CurrentUser> {
     return this.http
-      .post<SignUpResponse>(`${this.apiUrl}/sign-up/email`, payload, {
-        withCredentials: true,
-      })
+      .post<SignUpResponse>(
+        `${this.apiUrl}/sign-up/email`,
+        { ...payload, callbackURL: window.location.origin },
+        { withCredentials: true },
+      )
       .pipe(map((response) => response.user));
   }
 }

@@ -18,8 +18,9 @@ export const AuthActions = createActionGroup({
       name: string;
       preferredName?: string | null;
     }>(),
-    'Register Success': props<{ user: CurrentUser }>(),
+    'Register Success': emptyProps(),
     'Register Failure': props<{ error: string }>(),
+    'Clear Registration Pending': emptyProps(),
 
     Logout: emptyProps(),
     'Logout Success': emptyProps(),

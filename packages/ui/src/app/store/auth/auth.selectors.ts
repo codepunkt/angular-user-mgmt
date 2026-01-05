@@ -32,3 +32,8 @@ export const selectAuthInitialized = createSelector(
   selectAuthState,
   (state) => state.initialized,
 );
+
+export const selectRegistrationPending = createSelector(
+  selectAuthState,
+  (state) => state.registrationPending,
+);

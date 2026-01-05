@@ -60,7 +60,7 @@ export class AuthEffects {
       ofType(AuthActions.register),
       exhaustMap(({ email, password, name, preferredName }) =>
         this.authService.signUp({ email, password, name, preferredName }).pipe(
-          map((user) => AuthActions.registerSuccess({ user })),
+          map(() => AuthActions.registerSuccess()),
           catchError((error) =>
             of(
               AuthActions.registerFailure({
@@ -71,15 +71,6 @@ export class AuthEffects {
         ),
       ),
     ),
-  );
-
-  registerSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActions.registerSuccess),
-        tap(() => this.router.navigate(['/users'])),
-      ),
-    { dispatch: false },
   );
 
   logout$ = createEffect(() =>
