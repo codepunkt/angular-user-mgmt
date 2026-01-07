@@ -56,7 +56,7 @@ export class UsersEffects {
           catchError((error) =>
             of(
               UsersActions.updateUserFailure({
-                error: error.error?.message || 'Failed to update user',
+                error: error.message || 'Failed to update user',
               }),
             ),
           ),

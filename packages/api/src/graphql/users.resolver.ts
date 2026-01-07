@@ -134,6 +134,13 @@ export class UsersResolver {
       });
     }
 
+    // Prevent admins from changing their own role
+    if (input.role !== undefined && id === session.user.id) {
+      throw new GraphQLError('You cannot change your own role', {
+        extensions: { code: 'FORBIDDEN' },
+      });
+    }
+
     // Build update data
     const updateData: {
       name?: string;

@@ -1,15 +1,8 @@
-import { PrismaPg } from '@prisma/adapter-pg';
+import argon2 from 'argon2';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import pg from 'pg';
+import { prisma } from '@/prisma/prisma.js';
 import { sendVerificationEmail } from '../email/email.service.js';
-import { PrismaClient } from '../generated/prisma/index.js';
-
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 
 export const auth = betterAuth({
   basePath: '/api/auth',
@@ -27,6 +20,10 @@ export const auth = betterAuth({
     autoSignIn: false,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    password: {
+      hash: async (password) => await argon2.hash(password),
+      verify: async ({ hash, password }) => await argon2.verify(hash, password),
+    },
   },
   emailVerification: {
     sendOnSignUp: true,

@@ -14,9 +14,10 @@ interface UsersQueryResponse {
 }
 
 interface UpdateUserMutationResponse {
-  data: {
+  data?: {
     updateUser: User;
   };
+  errors?: Array<{ message: string }>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -87,6 +88,16 @@ export class UsersService {
         },
         { withCredentials: true },
       )
-      .pipe(map((response) => ({ user: response.data.updateUser })));
+      .pipe(
+        map((response) => {
+          if (response.errors?.length) {
+            throw new Error(response.errors[0].message);
+          }
+          if (!response.data) {
+            throw new Error('No data returned from server');
+          }
+          return { user: response.data.updateUser };
+        }),
+      );
   }
 }

@@ -20,8 +20,10 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { take } from 'rxjs';
 
 import type { User, UserRole } from '../../../core/models/user.model';
+import { selectCurrentUser } from '../../../store/auth/auth.selectors';
 import { UsersActions } from '../../../store/users/users.actions';
 import {
   selectUpdateError,
@@ -100,6 +102,9 @@ import {
               <label for="role-admin">Admin</label>
             </div>
           </div>
+          @if (isEditingSelf) {
+            <small class="role-hint">You cannot change your own role</small>
+          }
         </div>
       </form>
 
@@ -161,6 +166,12 @@ import {
         margin-bottom: 0;
         cursor: pointer;
       }
+
+      .role-hint {
+        display: block;
+        margin-top: 0.5rem;
+        color: var(--text-color-secondary);
+      }
     `,
   ],
 })
@@ -170,9 +181,11 @@ export class EditUserDialogComponent implements OnChanges {
   @Output() visibleChange = new EventEmitter<boolean>();
 
   dialogVisible = false;
+  isEditingSelf = false;
 
   private store = inject(Store);
   private fb = inject(FormBuilder);
+  private currentUser$ = this.store.select(selectCurrentUser);
 
   form: FormGroup = this.fb.group({
     name: ['', Validators.required],
@@ -190,6 +203,14 @@ export class EditUserDialogComponent implements OnChanges {
     }
     // biome-ignore lint/complexity/useLiteralKeys: SimpleChanges requires bracket notation
     if (changes['user'] && this.user) {
+      this.currentUser$.pipe(take(1)).subscribe((currentUser) => {
+        this.isEditingSelf = currentUser?.id === this.user.id;
+        if (this.isEditingSelf) {
+          this.form.get('role')?.disable();
+        } else {
+          this.form.get('role')?.enable();
+        }
+      });
       this.form.patchValue({
         name: this.user.name,
         preferredName: this.user.preferredName ?? '',
